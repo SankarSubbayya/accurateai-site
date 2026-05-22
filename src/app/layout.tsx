@@ -23,6 +23,7 @@ export const metadata: Metadata = {
   title: "AccurateAI — open-source AI for healthcare, governance, and decision-support",
   description:
     "Open-source AI projects by Sankar Subbayya. Multimodal triage on AMD MI300X, offline clinical decision-support on Gemma 4, governance plane for enterprise AI agents. Each project ships with its eval, its safety net, and its source.",
+  alternates: { canonical: "https://accurateai.org/" },
   openGraph: {
     title: "AccurateAI",
     description:
@@ -30,12 +31,21 @@ export const metadata: Metadata = {
     url: "https://accurateai.org",
     siteName: "AccurateAI",
     type: "website",
+    images: [
+      {
+        url: "/og.png",
+        width: 1200,
+        height: 630,
+        alt: "AccurateAI — AI products built in plain sight",
+      },
+    ],
   },
   twitter: {
     card: "summary_large_image",
     title: "AccurateAI",
     description:
       "Open-source AI for healthcare, governance, and decision-support.",
+    images: ["/og.png"],
   },
 };
 

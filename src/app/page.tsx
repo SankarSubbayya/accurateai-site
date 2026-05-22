@@ -2,8 +2,8 @@ type Project = {
   name: string;
   blurb: string;
   tag: string;
-  href: string;
-  repo?: string;
+  liveUrl?: string;
+  repoUrl: string;
 };
 
 const projects: Project[] = [
@@ -12,26 +12,57 @@ const projects: Project[] = [
     blurb:
       "Multimodal, agentic triage decision-support for rural healthcare in the Global South. A phone photo plus a typed narrative becomes a top-3 condition guess, a Red/Yellow/Green urgency, and a structured pre-visit SOAP for the clinic doctor — contextualized by village distance, cost, and harvest season. Built in 24 hours on a single AMD Instinct MI300X. Never diagnoses.",
     tag: "AMD Developer Hackathon · May 2026",
-    href: "https://pathtocare.pages.dev",
-    repo: "https://github.com/SankarSubbayya/path_to_care",
+    liveUrl: "https://pathtocare.pages.dev",
+    repoUrl: "https://github.com/SankarSubbayya/path_to_care",
   },
   {
     name: "Sentinel Health",
     blurb:
       "Offline triage for community health workers in low-resource settings. Multimodal Gemma 4 + a deterministic safety layer + a WhatsApp handoff to the hub physician — runs entirely on a clinic laptop, no internet. Scoped to five grassroots emergencies: trauma, poisoning, snake bite, MI, stroke.",
     tag: "Gemma 4 Good Hackathon · May 2026",
-    href: "https://sentinel-health.pages.dev",
-    repo: "https://github.com/SankarSubbayya/sentinel-health",
+    liveUrl: "https://sentinel-health.pages.dev",
+    repoUrl: "https://github.com/SankarSubbayya/sentinel-health",
   },
   {
     name: "Agent Sentinel",
     blurb:
       "Governance plane for enterprise AI agents. Gates every tool call, signs the audit trail with hash-chained HMAC, and meters per-BU spend. Built on Gemini 2.5 Flash + Pro with Cached Content over full policy documents. The control plane between agentic pilots and production.",
     tag: "AI & Big Data Expo · San Jose · May 2026",
-    href: "https://github.com/SankarSubbayya/agent_sentinel",
-    repo: "https://github.com/SankarSubbayya/agent_sentinel",
+    repoUrl: "https://github.com/SankarSubbayya/agent_sentinel",
   },
 ];
+
+// Person + Organization schema for SEO / link previews. Goes inline in the
+// homepage <body>; search engines pick it up regardless of position.
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Person",
+      "@id": "https://accurateai.org/#sankar",
+      name: "Sankaranarayanan Subbayya",
+      alternateName: "Sankar Subbayya",
+      url: "https://accurateai.org",
+      sameAs: [
+        "https://github.com/SankarSubbayya",
+        "https://huggingface.co/sankara68",
+        "https://linkedin.com/in/sankarsu",
+        "https://sankarsubbayya.github.io",
+      ],
+      jobTitle: "AI Engineer & Architect",
+      description:
+        "Veteran AI engineer specializing in Generative AI, multi-agent orchestration, and autonomous systems.",
+    },
+    {
+      "@type": "Organization",
+      "@id": "https://accurateai.org/#org",
+      name: "AccurateAI",
+      url: "https://accurateai.org",
+      founder: { "@id": "https://accurateai.org/#sankar" },
+      sameAs: ["https://github.com/SankarSubbayya"],
+    },
+  ],
+};
 
 export default function Home() {
   return (
@@ -91,20 +122,20 @@ export default function Home() {
                   {p.blurb}
                 </p>
                 <div className="flex flex-wrap gap-2 font-[family-name:var(--font-mono)] text-xs">
-                  <a
-                    href={p.href}
-                    className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md bg-[color:var(--accent)] text-white hover:bg-[color:var(--foreground)] transition-colors"
-                  >
-                    Live →
-                  </a>
-                  {p.repo && (
+                  {p.liveUrl && (
                     <a
-                      href={p.repo}
-                      className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md bg-[color:var(--accent-bg)] text-[color:var(--accent)] hover:bg-[color:var(--accent-soft)] transition-colors"
+                      href={p.liveUrl}
+                      className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md bg-[color:var(--accent)] text-white hover:bg-[color:var(--foreground)] transition-colors"
                     >
-                      Source
+                      Try demo →
                     </a>
                   )}
+                  <a
+                    href={p.repoUrl}
+                    className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md border border-[color:var(--border)] text-[color:var(--muted)] hover:border-[color:var(--accent)] hover:text-[color:var(--accent)] transition-colors"
+                  >
+                    Source ↗
+                  </a>
                 </div>
               </li>
             ))}
@@ -124,14 +155,27 @@ export default function Home() {
               code, not a disclaimer.
             </p>
             <p>
-              Every project ships an adversarially-authored test set, a
-              measurable safety property (zero false-negatives on Red triage,
-              zero unauthorized tool calls), and a single-command demo. If you
-              can&apos;t reproduce the eval on the repo, the claim doesn&apos;t
-              count.
+              Every project ships an adversarially-authored test set and a
+              measurable safety property — designed and tested against a
+              zero false-negative target on the included Red-triage eval set
+              for{" "}
+              <a
+                href="https://github.com/SankarSubbayya/path_to_care/blob/main/results/tuned_metrics.json"
+                className="underline decoration-[color:var(--accent-soft)] underline-offset-4 hover:text-[color:var(--accent)]"
+              >
+                Path to Care
+              </a>
+              , and against a zero-unauthorized-tool-call target on the
+              policy-injection eval for Agent Sentinel. If you can&apos;t
+              reproduce the eval on the repo, the claim doesn&apos;t count.
             </p>
           </div>
         </section>
+
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        />
 
         <footer className="pt-8 border-t border-[color:var(--border)] flex flex-wrap justify-between items-baseline gap-3 text-sm text-[color:var(--muted)]">
           <span>
