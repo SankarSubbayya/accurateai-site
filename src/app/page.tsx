@@ -150,6 +150,12 @@ export default function Home() {
             >
               🤗 HF
             </a>
+            <a
+              href="https://linkedin.com/in/sankarsu"
+              className="hover:text-[color:var(--accent)]"
+            >
+              LinkedIn
+            </a>
           </div>
         </footer>
       </main>
