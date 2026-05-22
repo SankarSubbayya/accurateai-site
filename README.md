@@ -1,36 +1,42 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# accurateai.org
 
-## Getting Started
+Portfolio hub for [Sankar Subbayya's](https://github.com/SankarSubbayya) AI
+projects. Linked from `accurateai.org` (apex), out to per-project landings:
+[pathtocare.pages.dev](https://pathtocare.pages.dev),
+[sentinel-health.pages.dev](https://sentinel-health.pages.dev), and
+[Agent Sentinel](https://github.com/SankarSubbayya/agent_sentinel).
 
-First, run the development server:
+Built with Next.js 16 (App Router, static export) + Tailwind v4.
+Deployed to Cloudflare Pages.
+
+## Local dev
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+npm install
+npm run dev          # http://localhost:3000
+npm run build        # writes static export to ./out
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Deploy — Cloudflare Pages
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+1. Push this repo to GitHub.
+2. Cloudflare dashboard → **Workers & Pages → Create application → Pages → Connect to Git**.
+3. Pick the repo. Build settings:
+   - Framework preset: **Next.js (Static HTML Export)**
+   - Build command: `npm run build`
+   - Build output directory: `out`
+4. Save & Deploy. You get `<project>.pages.dev` after the first build.
+5. **Custom domains → Set up a custom domain → `accurateai.org`** (and optionally `www.accurateai.org`). Cloudflare creates the records itself since DNS is already in the zone.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Every push to `main` auto-redeploys.
 
-## Learn More
+## Why static export
 
-To learn more about Next.js, take a look at the following resources:
+Cloudflare Pages serves static files out of the `out/` directory directly from
+the CDN — no runtime, no cold start, no Functions quota. The site is a
+portfolio hub with no API routes or server-rendered content, so static is the
+right tier.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+If we later need API routes or middleware, switch to
+[@cloudflare/next-on-pages](https://github.com/cloudflare/next-on-pages)
+without changing the source tree.

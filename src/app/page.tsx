@@ -1,64 +1,157 @@
-import Image from "next/image";
+type Project = {
+  name: string;
+  blurb: string;
+  tag: string;
+  href: string;
+  repo?: string;
+};
+
+const projects: Project[] = [
+  {
+    name: "Path to Care",
+    blurb:
+      "Multimodal, agentic triage decision-support for rural healthcare in the Global South. A phone photo plus a typed narrative becomes a top-3 condition guess, a Red/Yellow/Green urgency, and a structured pre-visit SOAP for the clinic doctor — contextualized by village distance, cost, and harvest season. Built in 24 hours on a single AMD Instinct MI300X. Never diagnoses.",
+    tag: "AMD Developer Hackathon · May 2026",
+    href: "https://pathtocare.pages.dev",
+    repo: "https://github.com/SankarSubbayya/path_to_care",
+  },
+  {
+    name: "Sentinel Health",
+    blurb:
+      "Offline triage for community health workers in low-resource settings. Multimodal Gemma 4 + a deterministic safety layer + a WhatsApp handoff to the hub physician — runs entirely on a clinic laptop, no internet. Scoped to five grassroots emergencies: trauma, poisoning, snake bite, MI, stroke.",
+    tag: "Gemma 4 Good Hackathon · May 2026",
+    href: "https://sentinel-health.pages.dev",
+    repo: "https://github.com/SankarSubbayya/sentinel-health",
+  },
+  {
+    name: "Agent Sentinel",
+    blurb:
+      "Governance plane for enterprise AI agents. Gates every tool call, signs the audit trail with hash-chained HMAC, and meters per-BU spend. Built on Gemini 2.5 Flash + Pro with Cached Content over full policy documents. The control plane between agentic pilots and production.",
+    tag: "AI & Big Data Expo · San Jose · May 2026",
+    href: "https://github.com/SankarSubbayya/agent_sentinel",
+    repo: "https://github.com/SankarSubbayya/agent_sentinel",
+  },
+];
 
 export default function Home() {
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
+    <div className="flex flex-1 justify-center">
+      <main className="w-full max-w-3xl px-6 py-16 sm:py-24">
+        <header className="mb-16 sm:mb-20">
+          <p className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-[0.18em] text-[color:var(--accent)] mb-4">
+            <span
+              className="inline-block w-2 h-2 rounded-full bg-[color:var(--accent)]"
+              style={{ boxShadow: "0 0 0 4px rgba(185,28,28,0.12)" }}
+              aria-hidden
             />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+            AccurateAI · open source
+          </p>
+          <h1
+            className="font-[family-name:var(--font-display)] text-5xl sm:text-6xl font-semibold leading-[0.95] tracking-[-0.025em] text-[color:var(--foreground)] mb-5"
+            style={{ fontVariationSettings: '"opsz" 144, "SOFT" 30, "WONK" 1' }}
           >
-            Documentation
-          </a>
-        </div>
+            AI products,
+            <br />
+            built in plain <em className="text-[color:var(--accent)] font-normal not-italic">sight.</em>
+          </h1>
+          <p className="text-lg sm:text-xl text-[color:var(--muted)] max-w-2xl leading-relaxed">
+            Open-source AI for healthcare access, enterprise governance, and
+            clinical decision-support. Each project ships with its
+            adversarial eval, its safety net, and its source — by{" "}
+            <a
+              href="https://github.com/SankarSubbayya"
+              className="text-[color:var(--foreground)] hover:text-[color:var(--accent)] underline decoration-[color:var(--accent-soft)] underline-offset-4"
+            >
+              Sankar Subbayya
+            </a>
+            .
+          </p>
+        </header>
+
+        <section className="mb-16">
+          <h2 className="font-[family-name:var(--font-display)] text-2xl font-semibold text-[color:var(--foreground)] mb-6 pb-2 border-b border-[color:var(--border)]">
+            Projects
+          </h2>
+          <ul className="space-y-5">
+            {projects.map((p) => (
+              <li
+                key={p.name}
+                className="group bg-[color:var(--surface)] border border-[color:var(--border)] rounded-xl p-6 sm:p-7 transition-all hover:border-[color:var(--accent)]"
+                style={{ boxShadow: "0 1px 2px rgba(0,0,0,0.02)" }}
+              >
+                <div className="flex flex-wrap items-baseline justify-between gap-3 mb-3">
+                  <h3 className="font-[family-name:var(--font-display)] text-2xl font-semibold tracking-tight text-[color:var(--accent)]">
+                    {p.name}
+                  </h3>
+                  <span className="font-[family-name:var(--font-mono)] text-[11px] uppercase tracking-[0.12em] text-[color:var(--muted)]">
+                    {p.tag}
+                  </span>
+                </div>
+                <p className="text-[color:var(--foreground)]/90 leading-relaxed mb-4">
+                  {p.blurb}
+                </p>
+                <div className="flex flex-wrap gap-2 font-[family-name:var(--font-mono)] text-xs">
+                  <a
+                    href={p.href}
+                    className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md bg-[color:var(--accent)] text-white hover:bg-[color:var(--foreground)] transition-colors"
+                  >
+                    Live →
+                  </a>
+                  {p.repo && (
+                    <a
+                      href={p.repo}
+                      className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md bg-[color:var(--accent-bg)] text-[color:var(--accent)] hover:bg-[color:var(--accent-soft)] transition-colors"
+                    >
+                      Source
+                    </a>
+                  )}
+                </div>
+              </li>
+            ))}
+          </ul>
+        </section>
+
+        <section className="mb-16">
+          <h2 className="font-[family-name:var(--font-display)] text-2xl font-semibold text-[color:var(--foreground)] mb-6 pb-2 border-b border-[color:var(--border)]">
+            What ties them together
+          </h2>
+          <div className="text-[color:var(--foreground)]/90 leading-relaxed space-y-4">
+            <p>
+              Three projects, one posture: <strong>AI that names its own limits.</strong>{" "}
+              Path to Care never produces a diagnosis. Sentinel Health
+              never overrides a red flag. Agent Sentinel never lets a model
+              bypass its policy gate. The deterministic safety layer is
+              code, not a disclaimer.
+            </p>
+            <p>
+              Every project ships an adversarially-authored test set, a
+              measurable safety property (zero false-negatives on Red triage,
+              zero unauthorized tool calls), and a single-command demo. If you
+              can&apos;t reproduce the eval on the repo, the claim doesn&apos;t
+              count.
+            </p>
+          </div>
+        </section>
+
+        <footer className="pt-8 border-t border-[color:var(--border)] flex flex-wrap justify-between items-baseline gap-3 text-sm text-[color:var(--muted)]">
+          <span>
+            AccurateAI · Sankar Subbayya · Apache-2.0
+          </span>
+          <div className="flex gap-4 font-[family-name:var(--font-mono)] text-xs uppercase tracking-wider">
+            <a
+              href="https://github.com/SankarSubbayya"
+              className="hover:text-[color:var(--accent)]"
+            >
+              GitHub
+            </a>
+            <a
+              href="https://huggingface.co/sankara68"
+              className="hover:text-[color:var(--accent)]"
+            >
+              🤗 HF
+            </a>
+          </div>
+        </footer>
       </main>
     </div>
   );
