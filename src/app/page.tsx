@@ -28,6 +28,7 @@ const projects: Project[] = [
     blurb:
       "Governance plane for enterprise AI agents. Gates every tool call, signs the audit trail with hash-chained HMAC, and meters per-BU spend. Built on Gemini 2.5 Flash + Pro with Cached Content over full policy documents. The control plane between agentic pilots and production.",
     tag: "AI & Big Data Expo · San Jose · May 2026",
+    liveUrl: "https://agent-sentinel.pages.dev",
     repoUrl: "https://github.com/SankarSubbayya/agent_sentinel",
   },
 ];
