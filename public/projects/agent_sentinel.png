@@ -1,0 +1,572 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Agent Sentinel — Governance Plane for Enterprise AI Agents</title>
+    <meta
+      name="description"
+      content="Gemini-powered control plane: every agent tool call gated, signed, and metered. Built for the Transforming Enterprise Through AI hackathon, May 2026."
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300..700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            fontFamily: {
+              sans: ['Inter', 'system-ui', 'sans-serif'],
+              serif: ['Fraunces', 'Georgia', 'serif'],
+              mono: ['JetBrains Mono', 'ui-monospace', 'monospace'],
+            },
+            colors: {
+              ink: '#0B0E16',
+              panel: '#11141E',
+              line: '#1E2230',
+              haze: '#A1A1AA',
+              ember: '#F97316',
+              embersoft: '#FDBA74',
+            },
+          },
+        },
+      };
+    </script>
+    <style>
+      html { background-color: #0B0E16; }
+      body {
+        background:
+          radial-gradient(900px 600px at 92% -8%, rgba(249,115,22,0.16) 0%, transparent 60%),
+          radial-gradient(800px 600px at -4% 108%, rgba(124,58,237,0.18) 0%, transparent 55%),
+          linear-gradient(180deg, #0B0E16 0%, #11141E 100%);
+        background-attachment: fixed;
+      }
+      .grid-canvas {
+        background-image:
+          linear-gradient(to right, rgba(255,255,255,0.025) 1px, transparent 1px),
+          linear-gradient(to bottom, rgba(255,255,255,0.025) 1px, transparent 1px);
+        background-size: 32px 32px;
+      }
+      .eyebrow {
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 11px;
+        letter-spacing: 0.22em;
+        text-transform: uppercase;
+        color: #F97316;
+      }
+      .h-display {
+        font-family: 'Fraunces', Georgia, serif;
+        font-weight: 500;
+        letter-spacing: -0.035em;
+        line-height: 0.95;
+        font-variation-settings: "opsz" 144;
+      }
+      .accent-italic {
+        font-style: italic;
+        color: #F97316;
+        font-variation-settings: "opsz" 144;
+      }
+      code, pre, .mono {
+        font-family: 'JetBrains Mono', monospace;
+      }
+      .ember-card {
+        background: rgba(249,115,22,0.05);
+        border: 1px solid rgba(249,115,22,0.22);
+      }
+      .panel-card {
+        background: rgba(20,22,32,0.55);
+        border: 1px solid rgba(255,255,255,0.06);
+      }
+      table.results { width: 100%; border-collapse: collapse; font-size: 14px; }
+      table.results th, table.results td {
+        text-align: left; padding: 10px 12px;
+        border-bottom: 1px solid rgba(255,255,255,0.06);
+      }
+      table.results th {
+        font-family: 'JetBrains Mono', monospace;
+        text-transform: uppercase;
+        letter-spacing: 0.12em;
+        font-size: 10px;
+        color: #A1A1AA;
+        font-weight: 500;
+      }
+      table.results td { color: #E4E4E7; }
+      table.results td:first-child { color: #FAFAFA; font-weight: 500; }
+      table.results td.num {
+        font-family: 'JetBrains Mono', monospace;
+        font-variant-numeric: tabular-nums;
+      }
+      .delta-up { color: #34D399; }
+      .delta-warn { color: #FBBF24; }
+    </style>
+  </head>
+  <body class="text-zinc-100 font-sans antialiased">
+    <div class="grid-canvas min-h-screen">
+      <!-- ── Top bar ─────────────────────────────────────────────────── -->
+      <header class="border-b border-white/5">
+        <div class="mx-auto flex h-12 max-w-5xl items-center justify-between px-6">
+          <a href="#top" class="flex items-center gap-2 text-sm font-semibold tracking-tight text-white">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" class="text-ember">
+              <path d="M12 2 L20 6 V12 C20 17 16 21 12 22 C8 21 4 17 4 12 V6 Z"
+                    stroke="currentColor" stroke-width="1.5" fill="rgba(249,115,22,0.08)" />
+              <path d="M8 12 L11 15 L16 9" stroke="currentColor" stroke-width="1.5"
+                    stroke-linecap="round" stroke-linejoin="round" />
+            </svg>
+            sentinel
+            <span class="hidden sm:inline mono text-[10px] text-haze ml-1 uppercase tracking-[0.18em]">
+              governance plane
+            </span>
+          </a>
+          <nav class="flex items-center gap-5 text-[12px] text-zinc-400">
+            <a href="#what" class="hover:text-white transition-colors">What</a>
+            <a href="#architecture" class="hover:text-white transition-colors">Architecture</a>
+            <a href="#results" class="hover:text-white transition-colors">Results</a>
+            <a href="#try" class="hover:text-white transition-colors">Try it</a>
+            <a href="https://github.com/SankarSubbayya/agent_sentinel"
+               target="_blank" rel="noopener"
+               class="text-zinc-200 hover:text-ember transition-colors">GitHub →</a>
+          </nav>
+        </div>
+      </header>
+
+      <main id="top" class="mx-auto max-w-5xl px-6 py-16 sm:py-24 space-y-24">
+        <!-- ── Hero ──────────────────────────────────────────────────── -->
+        <section class="space-y-7">
+          <div class="eyebrow inline-flex items-center gap-2 rounded border border-ember/40 bg-ember/[0.06] px-2.5 py-1">
+            <span class="h-1.5 w-1.5 rounded-full bg-ember"></span>
+            Governance Plane · v0.1.0
+          </div>
+
+          <h1 class="h-display text-[68px] sm:text-[88px] text-white">
+            Agent <span class="accent-italic">Sentinel</span>
+          </h1>
+
+          <p class="max-w-[680px] text-lg leading-relaxed text-zinc-300">
+            The control plane that gates every AI agent tool call, signs the
+            audit trail, and meters per-business-unit spend.
+            <span class="block mt-2 text-[15px] text-zinc-400">
+              Built on Gemini 2.5 Flash + Pro with Cached Content over full
+              policy documents. No chunking. No vector DB. Tamper-evident
+              without a blockchain.
+            </span>
+          </p>
+
+          <div class="flex flex-wrap gap-2.5 pt-2">
+            <a href="https://agent-sentinel-weld.vercel.app/" target="_blank" rel="noopener"
+               class="inline-flex items-center gap-2 rounded border border-ember/50 bg-ember/10 px-3.5 py-2 text-sm font-medium text-embersoft hover:bg-ember/20 hover:text-white transition-colors">
+              Live dashboard
+              <span class="mono text-[10px] tracking-wider opacity-70">↗</span>
+            </a>
+            <a href="https://agent-sentinel.up.railway.app/healthz" target="_blank" rel="noopener"
+               class="inline-flex items-center gap-2 rounded border border-white/10 bg-white/[0.03] px-3.5 py-2 text-sm font-medium text-zinc-200 hover:bg-white/[0.06] hover:text-white transition-colors">
+              Gateway · real Gemini
+              <span class="mono text-[10px] tracking-wider opacity-50">↗</span>
+            </a>
+            <a href="https://github.com/SankarSubbayya/agent_sentinel" target="_blank" rel="noopener"
+               class="inline-flex items-center gap-2 rounded border border-white/10 bg-white/[0.03] px-3.5 py-2 text-sm font-medium text-zinc-200 hover:bg-white/[0.06] hover:text-white transition-colors">
+              GitHub · MIT
+              <span class="mono text-[10px] tracking-wider opacity-50">↗</span>
+            </a>
+            <a href="https://agent-sentinel.up.railway.app/.well-known/agent.json"
+               target="_blank" rel="noopener"
+               class="inline-flex items-center gap-2 rounded border border-white/10 bg-white/[0.03] px-3.5 py-2 text-sm font-medium text-zinc-200 hover:bg-white/[0.06] hover:text-white transition-colors">
+              A2A agent card
+              <span class="mono text-[10px] tracking-wider opacity-50">↗</span>
+            </a>
+          </div>
+
+          <p class="mono text-[11px] tracking-[0.18em] text-zinc-500 pt-4">
+            TRANSFORMING ENTERPRISE THROUGH AI · LABLAB.AI · MAY 2026 ·
+            TRACK 2 (GOOGLE AI STUDIO) + TRACK 1 (AGENT SECURITY)
+          </p>
+        </section>
+
+        <!-- ── What it does ─────────────────────────────────────────── -->
+        <section id="what" class="space-y-6">
+          <div>
+            <div class="eyebrow">01 · The problem</div>
+            <h2 class="h-display text-[40px] mt-2 text-white">What it does</h2>
+          </div>
+          <p class="text-zinc-300 leading-relaxed max-w-[760px]">
+            Drop Sentinel in front of any MCP-speaking or A2A-speaking agent.
+            Every action — every email, every database read, every refund,
+            every agent-to-agent delegation — passes through a four-stage
+            gate and is recorded as a hash-chained, HMAC-signed receipt
+            that cites the exact policy version used.
+          </p>
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+            <div class="panel-card rounded-lg p-5">
+              <div class="eyebrow">Compliance officer</div>
+              <p class="mt-2 text-[14px] text-zinc-300 leading-snug">
+                "Who approved this action, and against which policy?"
+              </p>
+              <p class="mt-2 text-[13px] text-zinc-500 leading-snug">
+                Cited evidence in ~4 seconds instead of a 3-day audit pull.
+              </p>
+            </div>
+            <div class="panel-card rounded-lg p-5">
+              <div class="eyebrow">CISO</div>
+              <p class="mt-2 text-[14px] text-zinc-300 leading-snug">
+                "How do I stop my agent from doing the wrong thing?"
+              </p>
+              <p class="mt-2 text-[13px] text-zinc-500 leading-snug">
+                Drift detector + Pro reasoning block injections before execution.
+              </p>
+            </div>
+            <div class="panel-card rounded-lg p-5">
+              <div class="eyebrow">CFO</div>
+              <p class="mt-2 text-[14px] text-zinc-300 leading-snug">
+                "What does our agent fleet cost each business unit?"
+              </p>
+              <p class="mt-2 text-[13px] text-zinc-500 leading-snug">
+                Per-call cost ledger, base vs. Gemini split, BU-attributed.
+              </p>
+            </div>
+          </div>
+        </section>
+
+        <!-- ── Architecture ─────────────────────────────────────────── -->
+        <section id="architecture" class="space-y-6">
+          <div>
+            <div class="eyebrow">02 · How it works</div>
+            <h2 class="h-display text-[40px] mt-2 text-white">Architecture</h2>
+          </div>
+          <p class="text-zinc-400 leading-relaxed max-w-[760px]">
+            Four gates in series. Each one cheaper than the next. ~33% of calls finish at the static engine.
+            ~62% need Gemini Flash. ~5% escalate to Pro. Every decision is signed and chained.
+          </p>
+          <div class="space-y-2.5">
+            <div class="panel-card rounded-md p-4 flex items-baseline gap-4">
+              <span class="mono text-[11px] text-ember w-8">01</span>
+              <div>
+                <div class="text-white font-medium text-[15px]">Static engine — &lt; 5 ms</div>
+                <div class="text-zinc-400 text-[13.5px] leading-snug mt-0.5">
+                  Regex denylists, role ACL, refund cap, plaintext PII.
+                </div>
+              </div>
+            </div>
+            <div class="panel-card rounded-md p-4 flex items-baseline gap-4">
+              <span class="mono text-[11px] text-ember w-8">02</span>
+              <div>
+                <div class="text-white font-medium text-[15px]">Drift detector — ~0 ms</div>
+                <div class="text-zinc-400 text-[13.5px] leading-snug mt-0.5">
+                  Injection markers in arguments, tool-vs-declared-goal mismatch,
+                  fresh external recipients.
+                </div>
+              </div>
+            </div>
+            <div class="panel-card rounded-md p-4 flex items-baseline gap-4">
+              <span class="mono text-[11px] text-ember w-8">03</span>
+              <div>
+                <div class="text-white font-medium text-[15px]">Flash gate — ~1.5 s p50</div>
+                <div class="text-zinc-400 text-[13.5px] leading-snug mt-0.5">
+                  Gemini 2.5 Flash with <code class="text-embersoft">response_schema</code>
+                  and <code class="text-embersoft">thinking_budget=0</code>. Returns a typed
+                  allow/deny/rewrite decision.
+                </div>
+              </div>
+            </div>
+            <div class="panel-card rounded-md p-4 flex items-baseline gap-4">
+              <span class="mono text-[11px] text-ember w-8">04</span>
+              <div>
+                <div class="text-white font-medium text-[15px]">Pro reasoner — 3–5 s</div>
+                <div class="text-zinc-400 text-[13.5px] leading-snug mt-0.5">
+                  Gemini 2.5 Pro with <code class="text-embersoft">cached_content</code>
+                  over the full policy book (1M context). Cites the exact policy
+                  version. No chunking. No vector DB. ~75% token-cost savings on
+                  stable bundles via Cached Content.
+                </div>
+              </div>
+            </div>
+            <div class="ember-card rounded-md p-4 flex items-baseline gap-4">
+              <span class="mono text-[11px] text-ember w-8">∞</span>
+              <div>
+                <div class="text-white font-medium text-[15px]">
+                  Audit ledger · cost meter · alerts · anchors
+                </div>
+                <div class="text-zinc-300 text-[13.5px] leading-snug mt-0.5">
+                  Postgres-backed hash-chained ledger, HMAC signatures via rotatable KMS keys,
+                  Slack/Teams webhooks on deny+rewrite, Merkle batches anchorable to
+                  OpenTimestamps or Circle Arc state channels, per-BU cost rollup for CFO chargeback.
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="grid sm:grid-cols-2 gap-3 pt-3">
+            <div class="panel-card rounded-md p-4">
+              <div class="eyebrow">Adapters</div>
+              <p class="mt-2 text-[13.5px] text-zinc-300 leading-snug">
+                Google ADK, Anthropic Agent SDK, OpenAI tool-calling, CrewAI, generic MCP.
+                Three-line wrap of an existing agent.
+              </p>
+            </div>
+            <div class="panel-card rounded-md p-4">
+              <div class="eyebrow">Stack</div>
+              <p class="mt-2 text-[13.5px] text-zinc-300 leading-snug">
+                FastAPI · Postgres · Gemini 2.5 Flash + Pro · Files API · Cached Content ·
+                A2A · MCP · Next.js dashboard.
+              </p>
+            </div>
+          </div>
+        </section>
+
+        <!-- ── Results ──────────────────────────────────────────────── -->
+        <section id="results" class="space-y-6">
+          <div>
+            <div class="eyebrow">03 · What we measured</div>
+            <h2 class="h-display text-[40px] mt-2 text-white">Results</h2>
+          </div>
+
+          <p class="text-zinc-400 leading-relaxed max-w-[760px]">
+            Two evaluations matter for a governance plane: did it make the right
+            decision, and is the audit trail trustworthy. We ran both.
+          </p>
+
+          <div class="panel-card rounded-lg overflow-hidden">
+            <div class="px-5 pt-4 pb-2 border-b border-white/5">
+              <div class="eyebrow">Decision accuracy · 155 labeled scenarios</div>
+              <div class="text-[12px] text-zinc-500 mt-1 mono">
+                Real Gemini 2.5 Flash + Pro · ~$0.18 spent on the live API
+              </div>
+            </div>
+            <table class="results">
+              <thead>
+                <tr>
+                  <th>Category</th>
+                  <th>Cases</th>
+                  <th>Correct</th>
+                  <th>Δ</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Happy path</td>
+                  <td class="num">42</td>
+                  <td class="num">42 / 42 (100.0%)</td>
+                  <td class="num delta-up">+0.0</td>
+                </tr>
+                <tr>
+                  <td>Policy violation (PII / vendor / refund cap)</td>
+                  <td class="num">38</td>
+                  <td class="num">37 / 38 (97.4%)</td>
+                  <td class="num delta-warn">−2.6</td>
+                </tr>
+                <tr>
+                  <td>Indirect prompt injection</td>
+                  <td class="num">22</td>
+                  <td class="num">22 / 22 (100.0%)</td>
+                  <td class="num delta-up">+0.0</td>
+                </tr>
+                <tr>
+                  <td>Tool-vs-goal drift</td>
+                  <td class="num">14</td>
+                  <td class="num">13 / 14 (92.9%)</td>
+                  <td class="num delta-warn">−7.1</td>
+                </tr>
+                <tr>
+                  <td>Static-engine edge cases</td>
+                  <td class="num">25</td>
+                  <td class="num">25 / 25 (100.0%)</td>
+                  <td class="num delta-up">+0.0</td>
+                </tr>
+                <tr>
+                  <td>A2A delegation</td>
+                  <td class="num">14</td>
+                  <td class="num">11 / 14 (78.6%)</td>
+                  <td class="num delta-warn">−21.4</td>
+                </tr>
+                <tr style="background: rgba(249,115,22,0.04);">
+                  <td class="text-ember"><strong>Total</strong></td>
+                  <td class="num">155</td>
+                  <td class="num text-white"><strong>150 / 155 (96.8%)</strong></td>
+                  <td class="num delta-up">—</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="panel-card rounded-lg overflow-hidden">
+            <div class="px-5 pt-4 pb-2 border-b border-white/5">
+              <div class="eyebrow">Ledger integrity · production gateway + load test</div>
+              <div class="text-[12px] text-zinc-500 mt-1 mono">
+                <code>sentinel ledger verify</code> · re-derive HMAC, walk prev_hash → self_hash
+              </div>
+            </div>
+            <table class="results">
+              <thead>
+                <tr>
+                  <th>Run</th>
+                  <th>Receipts</th>
+                  <th>Chains</th>
+                  <th>Throughput</th>
+                  <th>Result</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Local load (laptop Postgres)</td>
+                  <td class="num">5,000</td>
+                  <td class="num">3</td>
+                  <td class="num">806 req/s</td>
+                  <td class="num delta-up"><strong>INTEGRITY: PASS</strong></td>
+                </tr>
+                <tr>
+                  <td>Live Railway gateway</td>
+                  <td class="num">703</td>
+                  <td class="num">3</td>
+                  <td class="num">~3 req/s</td>
+                  <td class="num delta-up"><strong>INTEGRITY: PASS</strong></td>
+                </tr>
+                <tr>
+                  <td>Tamper test (1 byte mutated)</td>
+                  <td class="num">1</td>
+                  <td class="num">1</td>
+                  <td class="num">—</td>
+                  <td class="num delta-warn"><strong>BROKEN — exit 1</strong></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="grid sm:grid-cols-4 gap-3 pt-2">
+            <div class="panel-card rounded p-4">
+              <div class="text-[28px] mono text-white font-semibold">96.8%</div>
+              <div class="text-[11px] text-zinc-500 mono uppercase tracking-wider mt-1">Real Gemini eval</div>
+            </div>
+            <div class="panel-card rounded p-4">
+              <div class="text-[28px] mono text-white font-semibold">88</div>
+              <div class="text-[11px] text-zinc-500 mono uppercase tracking-wider mt-1">Pytests passing</div>
+            </div>
+            <div class="panel-card rounded p-4">
+              <div class="text-[28px] mono text-white font-semibold">5,000</div>
+              <div class="text-[11px] text-zinc-500 mono uppercase tracking-wider mt-1">Receipts · zero forks</div>
+            </div>
+            <div class="panel-card rounded p-4">
+              <div class="text-[28px] mono text-white font-semibold">~70%</div>
+              <div class="text-[11px] text-zinc-500 mono uppercase tracking-wider mt-1">Gross margin · modeled</div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ── Try it ───────────────────────────────────────────────── -->
+        <section id="try" class="space-y-6">
+          <div>
+            <div class="eyebrow">04 · Run it yourself</div>
+            <h2 class="h-display text-[40px] mt-2 text-white">Try it</h2>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <a href="https://agent-sentinel-weld.vercel.app/" target="_blank" rel="noopener"
+               class="group panel-card rounded-lg p-5 hover:border-ember/50 hover:bg-ember/[0.03] transition-colors">
+              <div class="eyebrow group-hover:text-ember">Live dashboard</div>
+              <div class="text-[15px] text-white mt-2 leading-snug">
+                Live timeline · receipts · BU cost rollup · red-team console · policy library.
+              </div>
+              <div class="mono text-[11px] text-zinc-500 mt-3 group-hover:text-embersoft">
+                agent-sentinel-weld.vercel.app →
+              </div>
+            </a>
+            <a href="https://agent-sentinel.up.railway.app/healthz" target="_blank" rel="noopener"
+               class="group panel-card rounded-lg p-5 hover:border-ember/50 hover:bg-ember/[0.03] transition-colors">
+              <div class="eyebrow group-hover:text-ember">Live gateway</div>
+              <div class="text-[15px] text-white mt-2 leading-snug">
+                Real Gemini 2.5 Flash + Pro. Per-IP rate-limited (30/min, 500/day) so the public URL stays safe.
+              </div>
+              <div class="mono text-[11px] text-zinc-500 mt-3 group-hover:text-embersoft">
+                agent-sentinel.up.railway.app →
+              </div>
+            </a>
+            <a href="https://github.com/SankarSubbayya/agent_sentinel" target="_blank" rel="noopener"
+               class="group panel-card rounded-lg p-5 hover:border-ember/50 hover:bg-ember/[0.03] transition-colors">
+              <div class="eyebrow group-hover:text-ember">GitHub · MIT</div>
+              <div class="text-[15px] text-white mt-2 leading-snug">
+                Clone, run, audit. 88 pytests passing. Full architecture in README + CLAUDE.md.
+              </div>
+              <div class="mono text-[11px] text-zinc-500 mt-3 group-hover:text-embersoft">
+                github.com/SankarSubbayya/agent_sentinel →
+              </div>
+            </a>
+            <a href="https://agent-sentinel-weld.vercel.app/developer" target="_blank" rel="noopener"
+               class="group panel-card rounded-lg p-5 hover:border-ember/50 hover:bg-ember/[0.03] transition-colors">
+              <div class="eyebrow group-hover:text-ember">Developer overview</div>
+              <div class="text-[15px] text-white mt-2 leading-snug">
+                HTTP API, adapter quickstart, curl examples for the five live endpoints.
+              </div>
+              <div class="mono text-[11px] text-zinc-500 mt-3 group-hover:text-embersoft">
+                /developer →
+              </div>
+            </a>
+          </div>
+
+          <div class="pt-4">
+            <div class="eyebrow mb-2">Local · 60 seconds</div>
+            <pre class="panel-card rounded-md px-5 py-4 text-[13px] leading-[1.7] text-zinc-200 overflow-x-auto"><code><span class="text-zinc-500"># clone, install, run</span>
+git clone https://github.com/SankarSubbayya/agent_sentinel
+cd agent_sentinel
+cp .env.example .env                  <span class="text-zinc-500"># GEMINI_API_KEY optional</span>
+uv sync && uv run sentinel init-db
+uv run sentinel serve --port 8088     <span class="text-zinc-500"># gateway</span>
+
+<span class="text-zinc-500"># dashboard, in another shell</span>
+cd dashboard && npm i && PORT=3030 npm run dev
+
+<span class="text-zinc-500"># walk the demo + verify</span>
+uv run sentinel demo run              <span class="text-zinc-500"># 6 beats</span>
+uv run sentinel ledger verify         <span class="text-embersoft">INTEGRITY: PASS</span></code></pre>
+          </div>
+        </section>
+
+        <!-- ── The cardinal rule ────────────────────────────────────── -->
+        <section class="space-y-4">
+          <div>
+            <div class="eyebrow">05 · The cardinal rule</div>
+            <h2 class="h-display text-[40px] mt-2 text-white">It enforces policy. It doesn't write it.</h2>
+          </div>
+          <div class="ember-card rounded-lg p-6 space-y-3">
+            <p class="text-[15px] text-zinc-200 leading-relaxed">
+              Sentinel is a governance <em>plane</em> — it gates, signs, and meters.
+              It does <strong>not</strong> decide whether your policies are
+              correct, complete, or current.
+            </p>
+            <p class="text-[14px] text-zinc-400 leading-relaxed">
+              That responsibility stays with your compliance team. A production
+              deployment must configure its own KMS, rotate its own signing
+              keys, run its own red-team exercises against its own injection
+              corpus, and treat the policy catalog as living code. The receipt
+              chain proves <em>what was decided</em>; the policy library
+              determines <em>whether the decision was right</em>. Don't conflate
+              them.
+            </p>
+          </div>
+        </section>
+
+        <!-- ── Footer ───────────────────────────────────────────────── -->
+        <footer class="border-t border-white/5 pt-10 pb-4 space-y-4">
+          <div class="flex flex-wrap items-baseline gap-x-6 gap-y-2 text-[12px] text-zinc-500">
+            <span>
+              Built by
+              <a href="https://github.com/SankarSubbayya"
+                 class="text-zinc-300 hover:text-ember transition-colors">Sankar Subbayya</a>
+              for the
+              <a href="https://lablab.ai"
+                 class="text-zinc-300 hover:text-ember transition-colors">Transforming Enterprise Through AI</a>
+              hackathon · May 2026
+            </span>
+          </div>
+          <div class="flex flex-wrap gap-x-6 gap-y-2 text-[12px] text-zinc-600 mono uppercase tracking-[0.14em]">
+            <a href="https://github.com/SankarSubbayya/agent_sentinel" class="hover:text-ember">GitHub</a>
+            <a href="https://agent-sentinel-weld.vercel.app/" class="hover:text-ember">Dashboard</a>
+            <a href="https://agent-sentinel.up.railway.app" class="hover:text-ember">Gateway</a>
+            <a href="https://agent-sentinel-weld.vercel.app/developer" class="hover:text-ember">/developer</a>
+            <span class="text-zinc-700">MIT · v0.1.0</span>
+          </div>
+        </footer>
+      </main>
+    </div>
+  </body>
+</html>

@@ -2,6 +2,8 @@ type Project = {
   name: string;
   blurb: string;
   tag: string;
+  image: string;
+  imageAlt: string;
   liveUrl?: string;
   repoUrl: string;
 };
@@ -9,6 +11,9 @@ type Project = {
 const projects: Project[] = [
   {
     name: "Delphi",
+    image: "/projects/delphi.png",
+    imageAlt:
+      "Delphi headline slide — 13.3% to 79.5%, +66.2 pp shift after a single news shock.",
     blurb:
       "Synthetic populations as a computational substrate. You ask any question — 'will the Fed cut rates?', 'pretest this tagline', 'stress-test this decision' — and dozens of Gemini 3.5 Flash sub-agents, each role-playing a different American persona generated from US Census demographics and grounded in live web, reason in parallel. In ~60 seconds you get a probabilistic forecast, the strongest reasons for and against, where demographics diverge, and a striking outlier quote — synthesized into a Wall Street Journal–style summary by a final Gemini call. Live-demoed with a sixty-percentage-point swing on one news shock.",
     tag: "Google I/O Hackathon · May 2026",
@@ -17,6 +22,8 @@ const projects: Project[] = [
   },
   {
     name: "Path to Care",
+    image: "/projects/path_to_care.png",
+    imageAlt: "Path to Care · AMD Developer Hackathon project poster.",
     blurb:
       "Multimodal, agentic triage decision-support for rural healthcare in the Global South. A phone photo plus a typed narrative becomes a top-3 condition guess, a Red/Yellow/Green urgency, and a structured pre-visit SOAP for the clinic doctor — contextualized by village distance, cost, and harvest season. Built in 24 hours on a single AMD Instinct MI300X. Never diagnoses.",
     tag: "AMD Developer Hackathon · May 2026",
@@ -25,6 +32,8 @@ const projects: Project[] = [
   },
   {
     name: "Sentinel Health",
+    image: "/projects/sentinel_health.png",
+    imageAlt: "Sentinel Health · Gemma 4 Good Hackathon project poster.",
     blurb:
       "Offline triage for community health workers in low-resource settings. Multimodal Gemma 4 + a deterministic safety layer + a WhatsApp handoff to the hub physician — runs entirely on a clinic laptop, no internet. Scoped to five grassroots emergencies: trauma, poisoning, snake bite, MI, stroke.",
     tag: "Gemma 4 Good Hackathon · May 2026",
@@ -33,6 +42,8 @@ const projects: Project[] = [
   },
   {
     name: "Agent Sentinel",
+    image: "/projects/agent_sentinel.png",
+    imageAlt: "Agent Sentinel · AI & Big Data Expo project poster.",
     blurb:
       "Governance plane for enterprise AI agents. Gates every tool call, signs the audit trail with hash-chained HMAC, and meters per-BU spend. Built on Gemini 2.5 Flash + Pro with Cached Content over full policy documents. The control plane between agentic pilots and production.",
     tag: "AI & Big Data Expo · San Jose · May 2026",
@@ -116,9 +127,23 @@ export default function Home() {
             {projects.map((p) => (
               <li
                 key={p.name}
-                className="group bg-[color:var(--surface)] border border-[color:var(--border)] rounded-xl p-6 sm:p-7 transition-all hover:border-[color:var(--accent)]"
+                className="group bg-[color:var(--surface)] border border-[color:var(--border)] rounded-xl overflow-hidden transition-all hover:border-[color:var(--accent)]"
                 style={{ boxShadow: "0 1px 2px rgba(0,0,0,0.02)" }}
               >
+                <a
+                  href={p.liveUrl ?? p.repoUrl}
+                  className="block aspect-[1200/630] bg-[color:var(--border)]/30 overflow-hidden"
+                  aria-label={`Open ${p.name}`}
+                >
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src={p.image}
+                    alt={p.imageAlt}
+                    className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-[1.02]"
+                    loading="lazy"
+                  />
+                </a>
+                <div className="p-6 sm:p-7">
                 <div className="flex flex-wrap items-baseline justify-between gap-3 mb-3">
                   <h3 className="font-[family-name:var(--font-display)] text-2xl font-semibold tracking-tight text-[color:var(--accent)]">
                     {p.name}
@@ -145,6 +170,7 @@ export default function Home() {
                   >
                     Source ↗
                   </a>
+                </div>
                 </div>
               </li>
             ))}
