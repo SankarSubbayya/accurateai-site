@@ -8,6 +8,14 @@ type Project = {
 
 const projects: Project[] = [
   {
+    name: "Delphi",
+    blurb:
+      "Synthetic populations as a computational substrate. You ask any question — 'will the Fed cut rates?', 'pretest this tagline', 'stress-test this decision' — and dozens of Gemini 3.5 Flash sub-agents, each role-playing a different American persona generated from US Census demographics and grounded in live web, reason in parallel. In ~60 seconds you get a probabilistic forecast, the strongest reasons for and against, where demographics diverge, and a striking outlier quote — synthesized into a Wall Street Journal–style summary by a final Gemini call. Live-demoed with a sixty-percentage-point swing on one news shock.",
+    tag: "Google I/O Hackathon · May 2026",
+    liveUrl: "https://youtu.be/-jWNgutTlzM",
+    repoUrl: "https://github.com/SankarSubbayya/delphi",
+  },
+  {
     name: "Path to Care",
     blurb:
       "Multimodal, agentic triage decision-support for rural healthcare in the Global South. A phone photo plus a typed narrative becomes a top-3 condition guess, a Red/Yellow/Green urgency, and a structured pre-visit SOAP for the clinic doctor — contextualized by village distance, cost, and harvest season. Built in 24 hours on a single AMD Instinct MI300X. Never diagnoses.",
