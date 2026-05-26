@@ -183,16 +183,18 @@ export default function Home() {
           </h2>
           <div className="text-[color:var(--foreground)]/90 leading-relaxed space-y-4">
             <p>
-              Three projects, one posture: <strong>AI that names its own limits.</strong>{" "}
-              Path to Care never produces a diagnosis. Sentinel Health
-              never overrides a red flag. Agent Sentinel never lets a model
-              bypass its policy gate. The deterministic safety layer is
-              code, not a disclaimer.
+              <strong>Four projects, one posture: AI that names its own limits.</strong>
+            </p>
+            <p>
+              Path to Care never produces a diagnosis. Sentinel Health never
+              overrides a red flag. Agent Sentinel never lets a model bypass
+              its policy gate. Delphi never claims certainty without showing
+              where its personas disagreed. The safety layer is code, not a
+              disclaimer.
             </p>
             <p>
               Every project ships an adversarially-authored test set and a
-              measurable safety property — designed and tested against a
-              zero false-negative target on the included Red-triage eval set
+              measurable safety target — zero false-negatives on Red triage
               for{" "}
               <a
                 href="https://github.com/SankarSubbayya/path_to_care/blob/main/results/tuned_metrics.json"
@@ -200,9 +202,10 @@ export default function Home() {
               >
                 Path to Care
               </a>
-              , and against a zero-unauthorized-tool-call target on the
-              policy-injection eval for Agent Sentinel. If you can&apos;t
-              reproduce the eval on the repo, the claim doesn&apos;t count.
+              , zero unauthorized tool calls for Agent Sentinel, reproducible
+              demographic-divergence reporting for Delphi — plus a
+              single-command demo. If you can&apos;t reproduce the claim on
+              the repo, the claim doesn&apos;t count.
             </p>
           </div>
         </section>
