@@ -57,7 +57,7 @@ const projects: Project[] = [
     blurb:
       "Translate a math proof in plain English, voice, or a photo of handwritten work into Lean 4, then formally verify it with the real compiler in an isolated Firecracker microVM. Gemini 3.1 Pro writes the Lean, Vercel Sandbox runs it, and on rejection the agent reads the compiler's error and edits the proof — up to twelve times — until it typechecks. Compiler-verified, not vibes-verified.",
     tag: "Zero to Agent Hackathon · Vercel × DeepMind · March 2026",
-    liveUrl: "https://proof-agent.vercel.app",
+    liveUrl: "https://agentqed.pages.dev",
     repoUrl: "https://github.com/SankarSubbayya/AgentQED",
   },
 ];
