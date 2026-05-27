@@ -50,6 +50,16 @@ const projects: Project[] = [
     liveUrl: "https://agent-sentinel.pages.dev",
     repoUrl: "https://github.com/SankarSubbayya/agent_sentinel",
   },
+  {
+    name: "AgentQED",
+    image: "/projects/agentqed.png",
+    imageAlt: "AgentQED · Zero to Agent Hackathon project poster.",
+    blurb:
+      "Translate a math proof in plain English, voice, or a photo of handwritten work into Lean 4, then formally verify it with the real compiler in an isolated Firecracker microVM. Gemini 3.1 Pro writes the Lean, Vercel Sandbox runs it, and on rejection the agent reads the compiler's error and edits the proof — up to twelve times — until it typechecks. Compiler-verified, not vibes-verified.",
+    tag: "Zero to Agent Hackathon · Vercel × DeepMind · March 2026",
+    liveUrl: "https://proof-agent.vercel.app",
+    repoUrl: "https://github.com/SankarSubbayya/AgentQED",
+  },
 ];
 
 // Person + Organization schema for SEO / link previews. Goes inline in the
@@ -183,14 +193,15 @@ export default function Home() {
           </h2>
           <div className="text-[color:var(--foreground)]/90 leading-relaxed space-y-4">
             <p>
-              <strong>Four projects, one posture: AI that names its own limits.</strong>
+              <strong>Five projects, one posture: AI that names its own limits.</strong>
             </p>
             <p>
               Path to Care never produces a diagnosis. Sentinel Health never
               overrides a red flag. Agent Sentinel never lets a model bypass
               its policy gate. Delphi never claims certainty without showing
-              where its personas disagreed. The safety layer is code, not a
-              disclaimer.
+              where its personas disagreed. AgentQED never accepts a proof
+              unless the Lean compiler accepts it first. The safety layer is
+              code, not a disclaimer.
             </p>
             <p>
               Every project ships an adversarially-authored test set and a
