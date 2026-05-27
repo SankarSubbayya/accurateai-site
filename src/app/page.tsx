@@ -17,7 +17,7 @@ const projects: Project[] = [
     blurb:
       "Synthetic populations as a computational substrate. You ask any question — 'will the Fed cut rates?', 'pretest this tagline', 'stress-test this decision' — and dozens of Gemini 3.5 Flash sub-agents, each role-playing a different American persona generated from US Census demographics and grounded in live web, reason in parallel. In ~60 seconds you get a probabilistic forecast, the strongest reasons for and against, where demographics diverge, and a striking outlier quote — synthesized into a Wall Street Journal–style summary by a final Gemini call. Live-demoed with a sixty-percentage-point swing on one news shock.",
     tag: "Google I/O Hackathon · May 2026",
-    liveUrl: "https://delphi-landing-bkh.pages.dev",
+    liveUrl: "https://main.delphi-landing-bkh.pages.dev",
     repoUrl: "https://github.com/SankarSubbayya/delphi",
   },
   {
