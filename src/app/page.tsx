@@ -10,6 +10,17 @@ type Project = {
 
 const projects: Project[] = [
   {
+    name: "StyleForge",
+    image: "/projects/styleforge.png",
+    imageAlt:
+      "StyleForge title slide — one clip, four voices, an RL-tuned Gemma on AMD silicon.",
+    blurb:
+      "One clip, four voices. A video-captioning agent whose sense of tone was trained, not prompted: a Gemma 3 4B fine-tuned with DPO across three measured rounds on an AMD Instinct MI300X — reaching frontier-model parity on caption accuracy and beating the ~1T-class frontier outright on non-tech humor — shipped inside a survival-first container that writes valid output from its first second of execution. Scored top-10 of 38+ teams on the official hidden-set leaderboard, with every regression diagnosed, published, and rolled back by digest. Measured, not mythologized.",
+    tag: "AMD Developer Hackathon ACT II · July 2026",
+    liveUrl: "https://sankarsubbayya.github.io/styleforge/",
+    repoUrl: "https://github.com/SankarSubbayya/styleforge",
+  },
+  {
     name: "Delphi",
     image: "/projects/delphi.png",
     imageAlt:
@@ -193,15 +204,18 @@ export default function Home() {
           </h2>
           <div className="text-[color:var(--foreground)]/90 leading-relaxed space-y-4">
             <p>
-              <strong>Five projects, one posture: AI that names its own limits.</strong>
+              <strong>Six projects, one posture: AI that names its own limits.</strong>
             </p>
             <p>
               Path to Care never produces a diagnosis. Sentinel Health never
               overrides a red flag. Agent Sentinel never lets a model bypass
               its policy gate. Delphi never claims certainty without showing
               where its personas disagreed. AgentQED never accepts a proof
-              unless the Lean compiler accepts it first. The safety layer is
-              code, not a disclaimer.
+              unless the Lean compiler accepts it first. StyleForge never
+              ships an unmeasured change — every fine-tuning round is gated
+              by a held-out eval under an independent judge, and every scored
+              artifact is banked by digest so a bad bet is one tag away from
+              reversal. The safety layer is code, not a disclaimer.
             </p>
             <p>
               Every project ships an adversarially-authored test set and a
